@@ -65,7 +65,7 @@ export async function handleChat(req, res) {
 
           // Remove o usuário do mapa
           userMessagesQueue.delete(userID);
-
+          const currentDate = moment().tz('America/Sao_Paulo').format('YYYY-MM-DD');
           // Processa a mensagem acumulada
           try {
             console.log('Criando mensagem no thread');
@@ -79,7 +79,7 @@ export async function handleChat(req, res) {
             const run = await openai.beta.threads.runs.create(userThread, {
               assistant_id: 'asst_bisPzlFleyK3cSfIjeVkICEF',
               tools: assistantFunctions,
-              additional_instructions: `chame o cliente pelo nome: ${userName}`,
+              additional_instructions: `${currentDate}`,
             });
 
             const runId = run.id;
