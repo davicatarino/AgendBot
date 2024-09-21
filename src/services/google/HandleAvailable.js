@@ -9,7 +9,7 @@ import moment from 'moment-timezone';
  */
 export async function handleAvailable(args) {
   const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-  const today = moment().tz('America/Sao_Paulo').startOf('hour');
+  const today = moment().tz('America/Sao_Paulo').startOf('day');
 
   let timeMin = today.format();
   let timeMax = today.clone().add(7, 'days').endOf('day').format();
@@ -28,7 +28,6 @@ export async function handleAvailable(args) {
     const events = result.data.items;
     let freeTimes = [];
 
-    // Processa os eventos do Google Calendar
     for (let day = 0; day < 7; day++) {
       let dayStart = moment(today)
         .add(day, 'days')
@@ -50,26 +49,24 @@ export async function handleAvailable(args) {
           moment(a.start.dateTime).tz('America/Sao_Paulo') - moment(b.start.dateTime).tz('America/Sao_Paulo')
         );
 
-      dayEvents.forEach((event, index) => {
+      // Verificar se há lacunas entre os eventos e adicionar horários livres
+      dayEvents.forEach((event) => {
         const eventStart = moment(event.start.dateTime || event.start.date).tz('America/Sao_Paulo');
-        const eventEnd = moment(event.end.dateTime || event.end.date).tz('America/Sao_Paulo');
-
-        if (index === 0 && eventStart.isAfter(dayStart)) {
-          addFreeTime(dayStart, eventStart);
-        }
-
+        
         if (lastEndTime.isBefore(eventStart)) {
           addFreeTime(lastEndTime, eventStart);
         }
 
-        lastEndTime = eventEnd;
+        lastEndTime = moment(event.end.dateTime || event.end.date).tz('America/Sao_Paulo');
       });
 
+      // Adicionar qualquer horário livre após o último evento até o final do dia
       if (lastEndTime.isBefore(dayEnd)) {
         addFreeTime(lastEndTime, dayEnd);
       }
     }
 
+    // Função para adicionar intervalos de tempo livre
     function addFreeTime(startTime, endTime) {
       if (startTime.isBefore(endTime)) {
         freeTimes.push({
@@ -88,8 +85,7 @@ export async function handleAvailable(args) {
 
     console.log(formattedFreeTimes);
 
-    // Retorne diretamente a string com os horários formatados
-    return formattedFreeTimes;  // Corrigido aqui!
+    return formattedFreeTimes;  // Retornar os horários livres
   } catch (error) {
     console.error('Erro ao recuperar horários disponíveis:', error);
     throw new Error('Erro ao recuperar horários disponíveis: ' + error.message);
