@@ -8,13 +8,15 @@ const assistantFunctions = [
       parameters: {
         type: 'object',
         properties: {
-          Name: { type: 'string', description: 'Nome do evento' },
-          ManyChatID: { type: 'string', description: 'ID do usuário no ManyChat' },
+          Name: { type: 'string', description: 'Nome completo' },
+          CPF:{ type: 'string', description: 'cpf do usuario' },
+          Telefone:{ type: 'string', description: 'telefone do usuario' },
+          Nascimento:{ type: 'string', description: 'data de nascimento do usuario' },
           Email: { type: 'string', format: 'email', description: 'Email do usuário' },
           Horario: { type: 'string', format: 'date-time', description: 'Data e hora do evento' },
           Modelo: { type: 'string', enum: ['Presencial', 'On-line'], description: 'Modelo do evento' },
         },
-        required: ['Name', 'ManyChatID', 'Email', 'Horario', 'Modelo'],
+        required: ['Name', 'CPF', 'Email', 'Horario', 'Modelo' , 'Telefone' , 'Nascimento'],
       },
     },
   },
