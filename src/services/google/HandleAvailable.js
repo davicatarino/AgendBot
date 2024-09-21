@@ -29,6 +29,7 @@ export async function handleAvailable(args) {
     const events = result.data.items;
     let freeTimes = [];
 
+    // Processa os eventos do Google Calendar
     for (let day = 0; day < 7; day++) {
       let dayStart = moment(today)
         .add(day, 'days')
@@ -42,27 +43,17 @@ export async function handleAvailable(args) {
 
       const dayEvents = events
         .filter((event) => {
-          const eventStart = moment(
-            event.start.dateTime || event.start.date,
-          ).tz('America/Sao_Paulo');
-          const eventEnd = moment(event.end.dateTime || event.end.date).tz(
-            'America/Sao_Paulo',
-          );
+          const eventStart = moment(event.start.dateTime || event.start.date).tz('America/Sao_Paulo');
+          const eventEnd = moment(event.end.dateTime || event.end.date).tz('America/Sao_Paulo');
           return eventStart.isBefore(dayEnd) && eventEnd.isAfter(dayStart);
         })
-        .sort(
-          (a, b) =>
-            moment(a.start.dateTime).tz('America/Sao_Paulo') -
-            moment(b.start.dateTime).tz('America/Sao_Paulo'),
+        .sort((a, b) =>
+          moment(a.start.dateTime).tz('America/Sao_Paulo') - moment(b.start.dateTime).tz('America/Sao_Paulo')
         );
 
       dayEvents.forEach((event, index) => {
-        const eventStart = moment(
-          event.start.dateTime || event.start.date,
-        ).tz('America/Sao_Paulo');
-        const eventEnd = moment(event.end.dateTime || event.end.date).tz(
-          'America/Sao_Paulo',
-        );
+        const eventStart = moment(event.start.dateTime || event.start.date).tz('America/Sao_Paulo');
+        const eventEnd = moment(event.end.dateTime || event.end.date).tz('America/Sao_Paulo');
 
         if (index === 0 && eventStart.isAfter(dayStart)) {
           addFreeTime(dayStart, eventStart);
@@ -84,37 +75,10 @@ export async function handleAvailable(args) {
       const intervalExists = freeTimes.some(
         (freeTime) =>
           freeTime.start === startTime.format() &&
-          freeTime.end === endTime.format(),
+          freeTime.end === endTime.format()
       );
 
-      // Adiciona checagem para ver se algum evento divide o tempo livre
-      let conflictingEvents = events.filter((event) => {
-        const eventStart = moment(event.start.dateTime || event.start.date).tz('America/Sao_Paulo');
-        const eventEnd = moment(event.end.dateTime || event.end.date).tz('America/Sao_Paulo');
-        return eventStart.isBefore(endTime) && eventEnd.isAfter(startTime);
-      });
-
-      // Se houver conflitos, dividimos o tempo livre em partes
-      if (conflictingEvents.length > 0) {
-        conflictingEvents.forEach((event, index) => {
-          const eventStart = moment(event.start.dateTime || event.start.date).tz('America/Sao_Paulo');
-          const eventEnd = moment(event.end.dateTime || event.end.date).tz('America/Sao_Paulo');
-
-          // Adicionar tempo livre antes do evento (se houver)
-          if (startTime.isBefore(eventStart)) {
-            freeTimes.push({
-              start: startTime.format('DD/MM HH:mm'),
-              end: eventStart.format('DD/MM HH:mm'),
-            });
-          }
-
-          // Atualizar o início do próximo intervalo para depois do evento
-          startTime = eventEnd;
-        });
-      }
-
-      // Adicionar o restante do tempo livre após o último evento (se houver)
-      if (startTime.isBefore(endTime) && !intervalExists) {
+      if (!intervalExists) {
         freeTimes.push({
           start: startTime.format('DD/MM HH:mm'),
           end: endTime.format('DD/MM HH:mm'),
@@ -122,15 +86,20 @@ export async function handleAvailable(args) {
       }
     }
 
+    // Função para formatar os horários livres
     function formatFreeTimes(freeTimes) {
       return freeTimes.map((ft) => `${ft.start} - ${ft.end}`).join(', ');
     }
-    const formattedFreeTimes = formatFreeTimes(freeTimes);
-    console.log(formattedFreeTimes);
-    return formattedFreeTimes; // instead of { formattedFreeTimes }
 
+    const formattedFreeTimes = formatFreeTimes(freeTimes);
+
+    console.log(formattedFreeTimes);
+
+    // Retorne diretamente a string com os horários formatados
+    return formattedFreeTimes;  // Corrigido aqui!
   } catch (error) {
     console.error('Erro ao recuperar horários disponíveis:', error);
     throw new Error('Erro ao recuperar horários disponíveis: ' + error.message);
   }
 }
+
