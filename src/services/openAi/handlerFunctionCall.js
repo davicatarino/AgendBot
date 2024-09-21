@@ -1,7 +1,7 @@
-// handlerFunctionCall.js
+// services/openAi/handlerFunctionCall.js
 import openai from './openAiClient.js';
 import getVideoLinks from '../google/getVideos.js';
-import { handleEvent, handleAvailable, handleDelete } from '../google/eventFunctions.js'; // Importe as novas funções
+import { handleEventFunction, handleAvailableFunction, handleDeleteFunction } from '../google/eventFunctions.js';
 
 async function handleFunctionCall(toolCalls) {
   const toolOutputs = [];
@@ -15,45 +15,57 @@ async function handleFunctionCall(toolCalls) {
 
     switch (functionName) {
       case 'get_video_links':
-        const videos = await getVideoLinks(args.limit || 50);
-        const prompt =
-          `Filtre os vídeos abaixo e escolha os que são relevantes para o nicho de negócios: "${args.business_niche}".\n\n` +
-          videos
-            .map(
-              (video) =>
-                `Title: ${video.title}\nDescription: ${video.description}\nURL: ${video.url}\n`,
-            )
-            .join('\n');
+        try {
+          const videos = await getVideoLinks(args.limit || 50);
+          const prompt =
+            `Filtre os vídeos abaixo e escolha os que são relevantes para o nicho de negócios: "${args.business_niche}".\n\n` +
+            videos
+              .map(
+                (video) =>
+                  `Title: ${video.title}\nDescription: ${video.description}\nURL: ${video.url}\n`,
+              )
+              .join('\n');
 
-        const assistantResponse = await openai.createChatCompletion({
-          model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: prompt }],
-        });
+          const assistantResponse = await openai.createChatCompletion({
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: prompt }],
+          });
 
-        output = assistantResponse.data.choices[0].message.content;
+          output = assistantResponse.data.choices[0].message.content;
+        } catch (error) {
+          output = { error: error.message };
+        }
         break;
 
       case 'handleEvent':
-        // Assumindo que handleEvent retorna um objeto com detalhes do evento criado
-        const eventResult = await handleEvent(args);
-        output = {
-          message: 'Evento criado com sucesso',
-          event: eventResult,
-        };
+        try {
+          const eventResult = await handleEventFunction(args);
+          output = eventResult;
+        } catch (error) {
+          output = { error: error.message };
+        }
         break;
 
       case 'handleAvailable':
-        const availableSlots = await handleAvailable(args);
-        output = availableSlots;
+        try {
+          const availableSlots = await handleAvailableFunction(args);
+          output = availableSlots;
+        } catch (error) {
+          output = { error: error.message };
+        }
         break;
 
       case 'handleDelete':
-        const deleteResult = await handleDelete(args);
-        output = deleteResult;
+        try {
+          const deleteResult = await handleDeleteFunction(args);
+          output = deleteResult;
+        } catch (error) {
+          output = { error: error.message };
+        }
         break;
 
       default:
-        output = `Função ${functionName} não reconhecida.`;
+        output = { error: `Função ${functionName} não reconhecida.` };
     }
 
     console.log(`Output da função ${functionName}:`, output);

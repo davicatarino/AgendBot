@@ -1,41 +1,39 @@
+// services/google/handleDelete.js
 import { oauth2Client } from '../auth/autheticationGoogle.js';
 import { google } from 'googleapis';
-import axios from 'axios';
-import config from '../../config/index.js';
-config(); // Configura as variáveis de ambiente
+import updateManyChatCustomField from '../manychat/manyChatset.js'; // Importa a função para atualizar o ManyChat
 
-export async function handleDelete(req, res) {
-  // Extração correta do EventID
-  const { EventID: eventId } = req.body;
+/**
+ * Cancela um evento no Google Calendar.
+ * @param {Object} args - Argumentos necessários para cancelar o evento.
+ * @returns {Object} Resultado do cancelamento ou erro.
+ */
+export async function handleDelete(args) {
+  const { EventID: eventId } = args;
 
   try {
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-    console.log('Dados recebidos para deleção:', req.body);
+    console.log('Dados recebidos para deleção:', args);
 
     // Verifica se o EventID foi passado
     if (!eventId) {
-      return res.status(404).send({
-        message: 'Event ID não encontrado no ManyChat para o usuário especificado.',
-      });
+      throw new Error('Event ID não encontrado para o usuário especificado.');
     }
 
     // Deletar o evento do Google Calendar
     await calendar.events.delete({
       calendarId: 'primary',
-      eventId: eventId, // Usa o eventId passado no corpo da requisição
+      eventId: eventId, // Usa o eventId passado nos argumentos
     });
 
     console.log(`Evento deletado com sucesso: ${eventId}`);
 
     // Retorna sucesso
-    res.status(200).send({
+    return {
       message: 'Evento deletado com sucesso.',
-    });
+    };
   } catch (error) {
     console.error('Erro ao deletar evento:', error);
-    res.status(500).send({
-      message: 'Erro ao deletar evento.',
-      error: error.message,
-    });
+    throw new Error('Erro ao deletar evento: ' + error.message);
   }
 }
