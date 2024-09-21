@@ -1,5 +1,5 @@
 // services/google/eventFunctions.js
-import { handleEvent } from './handleEvent';
+import { handleEvent } from './handleEvent.js';
 import { handleAvailable } from './HandleAvailable.js';
 import { handleDelete } from './handleDelete.js';
 
