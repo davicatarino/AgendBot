@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 import moment from 'moment-timezone';
 import updateManyChatCustomField from '../manychat/manyChatset.js';
 
-export default async function handleEvent(args) {
+export async function handleEvent(args) {
   try {
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
     console.log('Dados recebidos:', args);
