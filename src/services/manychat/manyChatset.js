@@ -1,4 +1,4 @@
-import axios from 'axios';
+  import axios from 'axios';
 import moment from 'moment-timezone';
 import config from '../../config/index.js';
 config(); // Configura as variáveis de ambiente
@@ -7,15 +7,15 @@ export default async function updateManyChatCustomField(userID, eventID, part1, 
   const updateUrl = 'https://api.manychat.com/fb/subscriber/setCustomField';
   const sendFlowUrl = 'https://api.manychat.com/fb/sending/sendFlow';
   const accessToken = process.env.MC_KEY; // Substitua pelo seu token de acesso
-  const customFieldEventID = '11778653'; // ID do campo para eventID
+  const customFieldEventID = '11755389'; // ID do campo para eventID
   const customFieldIds = {
-    part1: '11778648',
-    part2: '11778649',
-    part3: '11778650',
-    part4: '11778651',
+    part1: '11709706',
+    part2: '11709687',
+    part3: '11709686',
+    part4: '11709710',
   };
 
-  const customFieldDate = '11785555'; // ID do campo personalizado para armazenar a data
+  const customFieldDate = '11758035'; // ID do campo personalizado para armazenar a data
 
   const configAxios = {
     headers: {
@@ -83,7 +83,7 @@ export default async function updateManyChatCustomField(userID, eventID, part1, 
     if (partsToSend.length > 0) {
       const sendFlowBody = {
         subscriber_id: userID,
-        flow_ns: 'content20240826153400_489194', // Ajuste o flow_ns se necessário
+        flow_ns: 'content20240914122016_929535', // Ajuste o flow_ns se necessário
       };
 
       const flowResponse = await axios.post(sendFlowUrl, sendFlowBody, configAxios);
