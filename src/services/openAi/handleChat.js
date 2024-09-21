@@ -79,7 +79,7 @@ export async function handleChat(req, res) {
             const run = await openai.beta.threads.runs.create(userThread, {
               assistant_id: 'asst_bisPzlFleyK3cSfIjeVkICEF',
               tools: assistantFunctions,
-              additional_instructions: `${currentDate}`,
+              additional_instructions: ` essa é a data de hoje, leve em consideração ao receber a data de agendamento do usuário ${currentDate}`,
             });
 
             const runId = run.id;
