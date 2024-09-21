@@ -1,0 +1,7 @@
+.env
+.eslintrc.json
+.prettierrc.js
+.vscode/
+node_modules/
+package-lock.json
+src/services/auth/token.json
