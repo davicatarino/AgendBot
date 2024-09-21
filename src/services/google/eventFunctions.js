@@ -34,13 +34,14 @@ export async function handleAvailableFunction(args) {
 /**
  * Função para cancelar um evento no Google Calendar.
  * @param {Object} args - Argumentos necessários para cancelar o evento.
- * @returns {Object} Resultado do cancelamento ou erro.
+ * @returns {String} Resultado do cancelamento ou erro em formato de string.
  */
 export async function handleDeleteFunction(args) {
   try {
     const result = await handleDelete(args);
-    return result;
+    return result.message;  // Certifique-se de retornar apenas a mensagem de sucesso como string
   } catch (error) {
-    return { error: error.message };
+    return `Erro ao deletar evento: ${error.message}`;  // Retorne o erro como string
   }
 }
+

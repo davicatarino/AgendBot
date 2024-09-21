@@ -72,8 +72,9 @@ async function handleFunctionCall(toolCalls) {
 
     toolOutputs.push({
       tool_call_id: toolCall.id,
-      output,  // Aqui, garantimos que `output` seja sempre uma string ou mensagem de erro.
+      output: output.toString(),  // Força o retorno a ser uma string
     });
+    
   }
 
   return toolOutputs;

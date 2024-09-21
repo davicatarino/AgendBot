@@ -1,4 +1,3 @@
-// services/google/HandleAvailable.js
 import { oauth2Client } from './../auth/autheticationGoogle.js';
 import { google } from 'googleapis';
 import moment from 'moment-timezone';
@@ -6,7 +5,7 @@ import moment from 'moment-timezone';
 /**
  * Calcula horários livres nos próximos 7 dias.
  * @param {Object} args - Argumentos necessários (se houver).
- * @returns {Object} Horários disponíveis formatados ou erro.
+ * @returns {String} Horários disponíveis formatados ou erro.
  */
 export async function handleAvailable(args) {
   const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
@@ -72,13 +71,7 @@ export async function handleAvailable(args) {
     }
 
     function addFreeTime(startTime, endTime) {
-      const intervalExists = freeTimes.some(
-        (freeTime) =>
-          freeTime.start === startTime.format() &&
-          freeTime.end === endTime.format()
-      );
-
-      if (!intervalExists) {
+      if (startTime.isBefore(endTime)) {
         freeTimes.push({
           start: startTime.format('DD/MM HH:mm'),
           end: endTime.format('DD/MM HH:mm'),
@@ -102,4 +95,3 @@ export async function handleAvailable(args) {
     throw new Error('Erro ao recuperar horários disponíveis: ' + error.message);
   }
 }
-
