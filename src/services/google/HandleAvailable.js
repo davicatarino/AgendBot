@@ -127,7 +127,8 @@ export async function handleAvailable(args) {
     }
     const formattedFreeTimes = formatFreeTimes(freeTimes);
     console.log(formattedFreeTimes);
-    return { formattedFreeTimes };
+    return formattedFreeTimes; // instead of { formattedFreeTimes }
+
   } catch (error) {
     console.error('Erro ao recuperar horários disponíveis:', error);
     throw new Error('Erro ao recuperar horários disponíveis: ' + error.message);

@@ -46,14 +46,15 @@ async function handleFunctionCall(toolCalls) {
         }
         break;
 
-      case 'handleAvailable':
-        try {
-          const availableSlots = await handleAvailableFunction(args);
-          output = availableSlots;
-        } catch (error) {
-          output = { error: error.message };
-        }
-        break;
+        case 'handleAvailable':
+          try {
+            const availableSlots = await handleAvailableFunction(args);
+            output = availableSlots.formattedFreeTimes;  // Ensure this is a string
+          } catch (error) {
+            output = `Erro ao buscar horários disponíveis: ${error.message}`;
+          }
+          break;
+       
 
       case 'handleDelete':
         try {
