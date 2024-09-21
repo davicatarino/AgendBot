@@ -10,7 +10,7 @@ import moment from 'moment-timezone';
  */
 export async function handleAvailable(args) {
   const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-  const today = moment().tz('America/Sao_Paulo').startOf('day');
+  const today = moment().tz('America/Sao_Paulo').startOf('hour');
 
   let timeMin = today.format();
   let timeMax = today.clone().add(7, 'days').endOf('day').format();
