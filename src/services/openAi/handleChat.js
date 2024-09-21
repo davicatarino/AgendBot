@@ -78,7 +78,7 @@ export async function handleChat(req, res) {
 
             console.log('Configurando busca na vector store');
             const run = await openai.beta.threads.runs.create(userThread, {
-              assistant_id: 'asst_awyZoNlTSG1pGZXBOjVo58Db',
+              assistant_id: 'asst_bisPzlFleyK3cSfIjeVkICEF',
               tools: assistantFunctions,
               additional_instructions: `chame o cliente pelo nome: ${userName}`,
             });
