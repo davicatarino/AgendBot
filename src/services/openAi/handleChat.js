@@ -1,4 +1,3 @@
-// services/openAi/handleChat.js
 import openai from './openAiClient.js';
 import transcribeAudio from './handleTranscription.js';
 import { VerificationRunStatus } from './verificationStatus.js';
