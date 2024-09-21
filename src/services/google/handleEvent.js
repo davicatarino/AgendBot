@@ -3,15 +3,15 @@ import { google } from 'googleapis';
 import moment from 'moment-timezone';
 import updateManyChatCustomField from '../manychat/manyChatset.js';
 
-export async function handleEvent(req, res) {
+export async function handleEventFunction(args) {
   try {
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-    console.log('Dados recebidos:', req.body);
-    const userName = req.body.Name;
-    const userID = req.body.ManyChatID;
-    const userEmail = req.body.Email;
-    const userHour = req.body.Horario;
-    const userModel = req.body.Modelo;
+    console.log('Dados recebidos:', args);
+    const userName = args.Name;
+    const userID = args.ManyChatID;
+    const userEmail = args.Email;
+    const userHour = args.Horario;
+    const userModel = args.Modelo;
     
     // Define a localização e os dados da conferência dependendo do modelo do evento
     let location;
@@ -89,14 +89,9 @@ export async function handleEvent(req, res) {
     const eventId = response.data.id;
     await updateManyChatCustomField(userID, eventId, null, null, null, null);
 
-    res.status(200).send({
-      message: 'Evento criado com sucesso',
-      event: response.data,
-    });
+    return `Evento criado com sucesso. ID do evento: ${eventId}`;
   } catch (error) {
     console.error('Erro ao criar evento:', error);
-    res.status(500).send({
-      message: `Erro ao criar evento: ${error.message}`,
-    });
+    return `Erro ao criar evento: ${error.message}`;
   }
 }
