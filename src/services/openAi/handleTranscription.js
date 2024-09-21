@@ -3,15 +3,23 @@ import fs from 'fs'; // File System para salvar o arquivo
 import path from 'path'; // Para trabalhar com caminhos
 
 export default async function transcribeAudio(audioFilePath) {
+  const audiosDir = path.join(__dirname, 'audios');
+
+  // Verifica se o diretório existe, caso contrário, cria
+  if (!fs.existsSync(audiosDir)) {
+    fs.mkdirSync(audiosDir, { recursive: true });
+  }
+
   try {
-    // Verifica se o arquivo existe
+    // Verifica se o arquivo de áudio existe
     if (!fs.existsSync(audioFilePath)) {
       throw new Error('Arquivo de áudio não encontrado: ' + audioFilePath);
     }
 
+    // Transcrição do áudio com o modelo Whisper
     const response = await openai.audio.transcriptions.create({
       file: fs.createReadStream(audioFilePath),
-      model: 'whisper-1', // Use o modelo Whisper da OpenAI para transcrição
+      model: 'whisper-1',
     });
 
     return response.text; // Retorna a transcrição
