@@ -16,7 +16,7 @@ export async function handleAvailable(args) {
 
   try {
     const result = await calendar.events.list({
-      calendarId: 'davi.catarino@hotmail.com',
+      calendarId: 'primary',
       timeMin: timeMin,
       timeMax: timeMax,
       timeZone: 'America/Sao_Paulo',
