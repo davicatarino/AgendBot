@@ -1,4 +1,3 @@
-// services/openAi/handlerFunctionCall.js
 import openai from './openAiClient.js';
 import getVideoLinks from '../google/getVideos.js';
 import { handleEventFunction, handleAvailableFunction, handleDeleteFunction } from '../google/eventFunctions.js';
@@ -22,7 +21,7 @@ async function handleFunctionCall(toolCalls) {
             videos
               .map(
                 (video) =>
-                  `Title: ${video.title}\nDescription: ${video.description}\nURL: ${video.url}\n`,
+                  `Title: ${video.title}\nDescription: ${video.description}\nURL: ${video.url}\n`
               )
               .join('\n');
 
@@ -33,47 +32,47 @@ async function handleFunctionCall(toolCalls) {
 
           output = assistantResponse.data.choices[0].message.content;
         } catch (error) {
-          output = { error: error.message };
+          output = `Erro ao buscar vídeos: ${error.message}`;
         }
         break;
 
       case 'handleEvent':
         try {
           const eventResult = await handleEventFunction(args);
-          output = eventResult;
+          output = eventResult;  // Certifique-se de que seja uma string.
         } catch (error) {
-          output = { error: error.message };
+          output = `Erro ao criar evento: ${error.message}`;
         }
         break;
 
-        case 'handleAvailable':
-          try {
-            const availableSlots = await handleAvailableFunction(args);
-            output = availableSlots.formattedFreeTimes;  // Ensure this is a string
-          } catch (error) {
-            output = `Erro ao buscar horários disponíveis: ${error.message}`;
-          }
-          break;
-       
+      case 'handleAvailable':
+        try {
+          // Certifique-se de que `handleAvailableFunction` retorne uma string diretamente
+          const availableSlots = await handleAvailableFunction(args);
+          output = availableSlots;  // Aqui garantimos que seja uma string.
+        } catch (error) {
+          output = `Erro ao buscar horários disponíveis: ${error.message}`;
+        }
+        break;
 
       case 'handleDelete':
         try {
           const deleteResult = await handleDeleteFunction(args);
-          output = deleteResult;
+          output = deleteResult;  // Certifique-se de que seja uma string.
         } catch (error) {
-          output = { error: error.message };
+          output = `Erro ao deletar evento: ${error.message}`;
         }
         break;
 
       default:
-        output = { error: `Função ${functionName} não reconhecida.` };
+        output = `Função ${functionName} não reconhecida.`;
     }
 
     console.log(`Output da função ${functionName}:`, output);
 
     toolOutputs.push({
       tool_call_id: toolCall.id,
-      output,
+      output,  // Aqui, garantimos que `output` seja sempre uma string ou mensagem de erro.
     });
   }
 
