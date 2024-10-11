@@ -1,1 +1,4 @@
-# 212_teste
+# 212
+
+npm i
+npm start

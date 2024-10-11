@@ -1,23 +1,23 @@
-# Use uma imagem base oficial do Node.js
-FROM node:20-alpine
+# Use a imagem oficial do Node.js como base
+FROM node:18
 
 # Defina o diretório de trabalho dentro do contêiner
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copie o package.json e o package-lock.json para o contêiner
+# Copie o arquivo package.json e package-lock.json
 COPY package*.json ./
 
-# Instale as dependências da aplicação
-RUN npm install --production
+# Instale as dependências
+RUN npm install
 
-# Copie o restante do código da aplicação para o contêiner
+# Instale o nodemon globalmente
+RUN npm install -g nodemon
+
+# Copie o restante do código fonte
 COPY . .
 
-# Instale o PM2 globalmente
-RUN npm install pm2 -g
+# Exponha a porta que a aplicação usará
+EXPOSE 3000
 
-# Exponha a porta que a aplicação usa
-EXPOSE 57420
-
-# Comando para iniciar a aplicação usando PM2
-CMD ["pm2-runtime", "index.js"]
+# Comando para iniciar a aplicação em modo de desenvolvimento
+CMD ["npm", "run", "dev"]

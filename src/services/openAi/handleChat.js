@@ -66,6 +66,7 @@ export async function handleChat(req, res) {
           // Remove o usuário do mapa
           userMessagesQueue.delete(userID);
           const currentDate = moment().tz('America/Sao_Paulo').format('YYYY-MM-DD');
+          const currentDayOfWeek = moment().tz('America/Sao_Paulo').format('dddd'); // Adicionando o dia da semana
           // Processa a mensagem acumulada
           try {
             console.log('Criando mensagem no thread');
@@ -77,14 +78,15 @@ export async function handleChat(req, res) {
 
             console.log('Configurando busca na vector store');
             const run = await openai.beta.threads.runs.create(userThread, {
-              assistant_id: 'asst_bisPzlFleyK3cSfIjeVkICEF',
+              assistant_id: 'asst_awyZoNlTSG1pGZXBOjVo58Db',
               tools: assistantFunctions,
-              additional_instructions: ` essa é a data de hoje, leve em consideração ao receber a data de agendamento do usuário ${currentDate}`,
+              additional_instructions: `Essa é a data de hoje: ${currentDate}, e hoje é ${currentDayOfWeek}. Leve isso em consideração ao receber a data de agendamento do usuário.`,
             });
 
             const runId = run.id;
             let runStatus = run.status;
 
+            console.log(`data de hoje:  ${currentDate}, ${currentDayOfWeek}. `);
             console.log(`Run ID: ${runId}, Status inicial do run: ${runStatus}`);
 
             const finalRunStatus = await VerificationRunStatus(

@@ -22,7 +22,7 @@ export async function handleDelete(args) {
 
     // Deletar o evento do Google Calendar
     await calendar.events.delete({
-      calendarId: 'primary',
+      calendarId: 'd4aa7e90b3d2b85cf7e89b51c0238b96e26a1fb0126db396d3d899dd36a0b6df@group.calendar.google.com',
       eventId: eventId, // Usa o eventId passado nos argumentos
     });
 
